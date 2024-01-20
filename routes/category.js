@@ -1,9 +1,11 @@
 const express = require("express");
 const route = express.Router()
-const {productView, addProduct} = require("../model/product")
+const {categoryView, addCategory, editCategory, deleteCategory} = require("../model/category")
 
-// route.get("/view", categoryView)
-// route.post("/add", addCategory)
+route.get("/view", categoryView)
+route.post("/add", addCategory)
+route.put("/edit/:id", editCategory)
+route.delete("/delete/:id", deleteCategory)
 
 
 module.exports = route;

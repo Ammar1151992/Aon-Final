@@ -17,22 +17,22 @@ model Product {
   image         String  
   description   String 
   price         Float  
-  color         String  
+  color         String?
   product_size  String  
-  is_active     Boolean? @default(false) 
-  date          DateTime? @default(now())
+  is_active     Boolean @default(true) 
+  date          String
   discount      Discount?
-  category      Category @relation(fields: [categoryId], references: [id])
-  categoryId    Int
+  category      Category @relation(fields: [categoryIds], references: [id])
+  categoryIds   Int
   bridges       Bridge[]
 }
 
 model Bridge {
+  id        Int     @id @default(autoincrement())
   productId Int
-  tagId     Int
+  tagIds    Int
   product   Product @relation(fields: [productId], references: [id])
-  tag      Tag     @relation(fields: [tagId], references: [id])
-  @@id([productId, tagId])
+  tag       Tag     @relation(fields: [tagIds], references: [id])
 }
 
 model Tag {
@@ -41,24 +41,19 @@ model Tag {
   bridges       Bridge[]
 }
 
-
 model Discount {
   id            Int     @id @default(autoincrement())
   discount_type String?
   percentage    Float?
   fixed         Float?  
-  product       Product? @relation(fields: [productId], references: [id])
-  productId     Int? @unique
+  product       Product? @relation(fields: [productIds], references: [id])
+  productIds    Int @unique
 }
-
 
 model Category {
   id            Int     @id @default(autoincrement())
-  age           String
-  gender        String
-  department    String
-  char          String
-  image         String?
+  name          String
+  image_url     String?
   products      Product[]
 }
 
