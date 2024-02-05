@@ -81,34 +81,113 @@ const productView = async (req, res) => {
 };
 
 const addProduct = async (req, res) => {
-  const {
-    title,
-    description,
-    prices,
-    color,
-    date,
-    product_size,
-    is_active,
-    categoryIds,
-    tagIds
-  } = req.body;
-
-  const price = parseFloat(prices);
-  const categoryId = parseInt(categoryIds);
-
-  const uploadFiles = await uploadFile(req.files.file.data, {
-    publicKey: process.env.UPLOAD_KEY,
-    store: "auto",
-    metadata: {
-      subsystem: "uploader",
-      pet: "cat",
-    },
-  });
-  const image = uploadFiles.cdnUrl;
-  const formattedDate = dayjs(date).format("YYYY-MM-DD");
-
+  const userId = +req.query.userId;
+  
   try {
-    let product = await prisma.product.create({
+    const checkAdmin = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if(checkAdmin.isAdmin === true) {
+      const {
+        title,
+        description,
+        prices,
+        color,
+        product_size,
+        is_active,
+        categoryIds,
+        tagIds
+      } = req.body;
+    
+      const price = parseFloat(prices);
+      const categoryId = parseInt(categoryIds);
+    
+      const uploadFiles = await uploadFile(req.files.file.data, {
+        publicKey: process.env.UPLOAD_KEY,
+        store: "auto",
+        metadata: {
+          subsystem: "uploader",
+          pet: "cat",
+        },
+      });
+      const image = uploadFiles.cdnUrl;
+    
+      let product = await prisma.product.create({
+        data: {
+          title,
+          image,
+          description,
+          price,
+          color,
+          product_size,
+          is_active: is_active !== undefined ? is_active : true,
+          category: {
+            connect: { id: categoryId },
+          },
+        },
+      });
+  
+      let bridges = await prisma.bridge.createMany({
+        data: tagIds.map(tagId => ({
+          productId: product.id,
+          tagIds: parseInt(tagId),
+        })),
+      });
+      res.send({
+        success: true,
+        product,
+        bridges
+      });
+    }else {
+      return res.send({
+        success: false,
+        msg: "You do not have access permission",
+      });
+    }
+    
+  } catch (error) {
+    res.send({
+      success: false,
+      error,
+    });
+    console.log(error);
+  }
+}
+
+const editProduct = async (req, res) => {
+  const userId = +req.query.userId;
+  const id = +req.params.id;
+try {
+  const checkAdmin = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+  if(checkAdmin.isAdmin === true) {
+    const {
+      title,
+      description,
+      prices,
+      color,
+      product_size,
+      is_active,
+      categoryIds,
+      tagIds
+    } = req.body;
+  
+    const price = parseFloat(prices);
+    const categoryId = parseInt(categoryIds);
+  
+    const uploadFiles = await uploadFile(req.files.file.data, {
+      publicKey: process.env.UPLOAD_KEY,
+      store: "auto",
+      metadata: {
+        subsystem: "uploader",
+        pet: "cat",
+      },
+    });
+    const image = uploadFiles.cdnUrl;
+  
+    let product = await prisma.product.update({
+      where: {id: id},
       data: {
         title,
         image,
@@ -116,14 +195,18 @@ const addProduct = async (req, res) => {
         price,
         color,
         product_size,
-        date: formattedDate,
         is_active: is_active !== undefined ? is_active : true,
         category: {
           connect: { id: categoryId },
         },
       },
     });
-
+    if(!product){
+      return res.send({
+        success: false,
+        msg: "Not found"
+      })
+    }
     let bridges = await prisma.bridge.createMany({
       data: tagIds.map(tagId => ({
         productId: product.id,
@@ -135,16 +218,50 @@ const addProduct = async (req, res) => {
       product,
       bridges
     });
-  } catch (error) {
-    res.send({
+  }else {
+    return res.send({
       success: false,
-      error,
+      msg: "You do not have access permission",
     });
-    console.log(error);
   }
-};
+} catch (error) {
+  return res.send({
+    success: false,
+    error
+  })
+}
+}
+
+const deletProduct = async (res, req) => {
+  const id = req.params.id;
+  const userId = req.query.userId;
+try {
+  const checkAdmin = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+  if(checkAdmin.isAdmin === true){
+    const deleted = await prisma.product.delete({
+      where: {id:id}
+    })
+    if(deleted){
+      return res.send({
+        success: true,
+        deleted,
+        msg: "Product has been deleted"
+      })
+    }
+  }
+} catch (error) {
+  return res.send({
+    success: false,
+    error
+  })
+}
+}
 
 module.exports = {
   productView,
   addProduct,
+  editProduct,
+  deletProduct
 };

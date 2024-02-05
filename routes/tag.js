@@ -1,8 +1,11 @@
 const express = require("express");
 const route = express.Router()
 
-const addTag = require("../model/tag");
+const {tagView, addTag, editTag, deleteTag} = require("../model/tag");
 
-route.post("/addTag", addTag);
+route.get("/view", tagView);
+route.post("/add", addTag);
+route.put("/edite", editTag);
+route.delete("/delete", deleteTag);
 
 module.exports = route;

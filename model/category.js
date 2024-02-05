@@ -41,14 +41,26 @@ const categoryView = async (req, res) => {
 
 const addCategory = async (req, res) => {
   const body = req.body;
+  const userId = req.query.userId;
+
   try {
-    let category = await prisma.category.create({
-      data: body,
+    const checkAdmin = await prisma.user.findUnique({
+      where: { id: userId },
     });
-    return res.send({
-      success: true,
-      category,
-    });
+    if (checkAdmin.isAdmin === true) {
+      let category = await prisma.category.create({
+        data: body,
+      });
+      return res.send({
+        success: true,
+        category,
+      });
+    } else {
+      return res.send({
+        success: false,
+        msg: "You do not have access permission",
+      });
+    }
   } catch (error) {
     return res.send({
       success: false,
@@ -59,22 +71,34 @@ const addCategory = async (req, res) => {
 
 const editCategory = async (req, res) => {
   const id = req.params.id;
+  const userId = req.query.userId;
   const { name, image_url } = req.body;
+
   try {
-    let category = await prisma.category.update({
-      where: { id: +id },
-      data: { name, image_url },
+    const checkAdmin = await prisma.user.findUnique({
+      where: { id: userId },
     });
-    if (!category) {
-      return res.status(404).send({
+    if (checkAdmin.isAdmin === true) {
+      let category = await prisma.category.update({
+        where: { id: +id },
+        data: { name, image_url },
+      });
+      if (!category) {
+        return res.status(404).send({
+          success: false,
+          error: "Category not found",
+        });
+      }
+      res.send({
+        success: true,
+        category,
+      });
+    } else {
+      return res.send({
         success: false,
-        error: "Category not found",
+        msg: "You do not have access permission",
       });
     }
-    res.send({
-      success: true,
-      category,
-    });
   } catch (error) {
     res.send({
       success: false,
@@ -85,21 +109,33 @@ const editCategory = async (req, res) => {
 
 const deleteCategory = async (req, res) => {
   const id = req.params.id;
+  const userId = req.query.userId;
+
   try {
-    let category = await prisma.category.delete({
-      where: { id: +id },
+    const checkAdmin = await prisma.user.findUnique({
+      where: { id: userId },
     });
-    if (!category) {
-      return res.status(404).send({
+    if (checkAdmin.isAdmin === true) {
+      let category = await prisma.category.delete({
+        where: { id: +id },
+      });
+      if (!category) {
+        return res.status(404).send({
+          success: false,
+          error: "Category not found",
+        });
+      }
+      res.send({
+        success: true,
+        msg: "Category has been deleted",
+        category,
+      });
+    } else {
+      return res.send({
         success: false,
-        error: "Category not found",
+        msg: "You do not have access permission",
       });
     }
-    res.send({
-      success: true,
-      msg: "Category has been deleted",
-      category,
-    });
   } catch (error) {
     res.send({
       success: false,
