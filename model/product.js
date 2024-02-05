@@ -65,9 +65,15 @@ const productView = async (req, res) => {
         msg: "Tag is not found",
       });
     }
-
-    const productTag = tagProducts.bridges.map((bridge) => bridge.product);
-    return res.send({
+    
+    const productTag = tagProducts.map((tag) => {
+      if (tag.bridges && tag.bridges.length > 0) {
+        return tag.bridges.map((bridge) => bridge.product);
+      } else {
+        return [];
+      }
+    });
+      return res.send({
       success: true,
       productTag,
     });
