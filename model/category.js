@@ -6,37 +6,46 @@ const prisma = new PrismaClient();
 const categoryView = async (req, res) => {
   const search = req.query.search;
 
-  if (search) {
-    const filterSearch = await prisma.category.findMany({
-      where: {
-        OR: [
-          {
-            name: {
-              contains: search,
-              mode: "insensitive",
+  try {
+    if (search) {
+      const filterSearch = await prisma.category.findMany({
+        where: {
+          OR: [
+            {
+              name: {
+                contains: search,
+                mode: "insensitive",
+              },
             },
-          },
-        ],
-      },
-    });
-    res.send({
-      success: true,
-      filterSearch,
-    });
-  } else {
-    const allCategory = await prisma.category.findMany();
-    if (allCategory) {
+          ],
+        },
+      });
       res.send({
         success: true,
-        allCategory,
+        filterSearch,
       });
     } else {
-      res.send({
-        success: false,
-        msg: "No data is set",
-      });
+      const category = await prisma.category.findMany();
+      if (category) {
+        res.send({
+          success: true,
+          category,
+        });
+      } else {
+        res.send({
+          success: false,
+          msg: "No data is set",
+        });
+      }
     }
+  } catch (error) {
+    console.log(error);
+    return res.send({
+      success: false,
+      error
+    })
   }
+  
 };
 
 const addCategory = async (req, res) => {

@@ -6,15 +6,15 @@ const prisma = new PrismaClient();
 const orderView = async (req, res) => {
   const userId = req.query.user;
   try {
-    const getOrder = await prisma.order.findMany({
+    const order = await prisma.order.findMany({
       where: {
         userId: parseInt(userId)
       }
     })
-    if(getOrder.length > 0){
+    if(order.length > 0){
       return res.send({
         success: true,
-        getOrder
+        order
       })
     }else{
       return res.send({

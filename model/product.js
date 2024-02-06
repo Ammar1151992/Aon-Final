@@ -78,10 +78,10 @@ const productView = async (req, res) => {
       productTag,
     });
   } else {
-    const allProduct = await prisma.product.findMany();
+    const product = await prisma.product.findMany();
     return res.send({
       success: true,
-      allProduct,
+      product,
     });
   }
 };

@@ -6,15 +6,15 @@ const prisma = new PrismaClient();
 const wishlistView = async (req, res) => {
   const userId = req.query.user;
   try {
-    const getOrder = await prisma.wishlist.findMany({
+    const wishlist = await prisma.wishlist.findMany({
       where: {
         userId: parseInt(userId)
       }
     })
-    if(getOrder.length > 0){
+    if(wishlist.length > 0){
       return res.send({
         success: true,
-        getOrder
+        wishlist
       })
     }else{
       return res.send({
@@ -73,4 +73,32 @@ const deleteWishlist = async (req, res) => {
       msg: "The order has been deleted!"
     })
 }
-module.exports = { addWishlist, deleteWishlist, wishlistView };
+
+
+const wishListAdmin = async (req, res) => {
+  const userId = +req.query.userId;
+  try {
+    const checkAdmin = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (checkAdmin.isAdmin === true) {
+      let wishlist = await prisma.wishlist.findMany();
+      return res.send({
+        success: true,
+        wishlist,
+      });
+    } else {
+      return res.send({
+        success: false,
+        msg: "You do not have access permission",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({
+      success: false,
+      error,
+    });
+  }
+};
+module.exports = { addWishlist, deleteWishlist, wishlistView, wishListAdmin };
