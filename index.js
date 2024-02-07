@@ -15,7 +15,9 @@ const port = 3000;
 
 app.use(cors());
 app.use(express.json())
-app.use(fileUpload())
+app.use(fileUpload({
+    limits: {fileSize: 50 * 5000 * 5000}
+}))
 
 app.use("/product", product);
 app.use("/category", category);
