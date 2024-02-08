@@ -256,7 +256,6 @@ try {
         msg: "This product is not found"
       })
     }
-
     const deleted = await prisma.product.delete({
       where: {id:id}
     })

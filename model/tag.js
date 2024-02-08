@@ -87,7 +87,7 @@ const editTag = async (req, res) => {
 };
 
 const deleteTag = async (req, res) => {
-  const tagId = req.query.tagId;
+  const id = req.params.id;
   const userId = req.query.userId;
 
   try {
@@ -95,13 +95,30 @@ const deleteTag = async (req, res) => {
       where: { id: userId },
     });
     if (checkAdmin.isAdmin === true) {
+      const deletBridge = await prisma.bridge.deleteMany({
+        where: { tagIds: id },
+      });
+      if(!deletBridge) {
+        return res.send({
+          success:false,
+          msg: "This Tag is not found"
+        })
+      }
       let tag = await prisma.tag.delete({
-        where: {id: tagId},
+        where: {id: id},
       });
-      return res.send({
-        success: true,
-        tag,
-      });
+      if(tag) {
+        return res.send({
+          success: true,
+          tag,
+        });
+      }else {
+        return res.send({
+          success: false,
+          msg:"This Tag is not found"
+        });
+      }
+     
     } else {
       return res.send({
         success: false,

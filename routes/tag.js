@@ -6,6 +6,6 @@ const {tagView, addTag, editTag, deleteTag} = require("../model/tag");
 route.get("/view", tagView);
 route.post("/add", addTag);
 route.put("/edite", editTag);
-route.delete("/delete", deleteTag);
+route.delete("/delete/:id", deleteTag);
 
 module.exports = route;
