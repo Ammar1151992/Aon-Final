@@ -238,14 +238,25 @@ try {
 }
 }
 
-const deletProduct = async (res, req) => {
-  const id = req.params.id;
-  const userId = req.query.userId;
+const deletProduct = async (req, res) => {
+  const id = +req.params.id;
+  const userId = +req.query.userId;
 try {
   const checkAdmin = await prisma.user.findUnique({
     where: { id: userId },
   });
   if(checkAdmin.isAdmin === true){
+    const deletBridge = await prisma.bridge.deleteMany({
+      where: { productId: id },
+    });
+
+    if(!deletBridge) {
+      return res.send({
+        success:false,
+        msg: "This product is not found"
+      })
+    }
+
     const deleted = await prisma.product.delete({
       where: {id:id}
     })
@@ -255,9 +266,20 @@ try {
         deleted,
         msg: "Product has been deleted"
       })
+    }else {
+      return res.send({
+        success: false,
+        msg: "This product is not found"
+      })
     }
+  }else {
+    return res.send({
+      success: false,
+      msg: "You do not have access"
+    })
   }
 } catch (error) {
+  console.log(error);
   return res.send({
     success: false,
     error
