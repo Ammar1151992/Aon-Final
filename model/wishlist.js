@@ -84,10 +84,20 @@ const wishListAdmin = async (req, res) => {
     });
     if (checkAdmin.isAdmin === true) {
       let wishlist = await prisma.wishlist.findMany();
-      return res.send({
-        success: true,
-        wishlist,
-      });
+      if(wishlist.length > 0){
+        return res.send({
+          success: true,
+          wishlist,
+        });
+      }else{
+        return res
+        .status(401)
+        .send({
+          success: false,
+          msg: "No data",
+        });
+      }
+     
     } else {
       return res.send({
         success: false,

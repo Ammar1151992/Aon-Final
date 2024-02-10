@@ -83,10 +83,19 @@ const orderAdmin = async (req, res) => {
     });
     if (checkAdmin.isAdmin === true) {
       let order = await prisma.order.findMany();
-      return res.send({
-        success: true,
-        order,
-      });
+      if(order.length > 0) {
+        return res.send({
+          success: true,
+          order,
+        });
+      }else{
+        return res
+        .status(401)
+        .send({
+          success: false,
+          msg: "No data",
+        });
+      }
     } else {
       return res.send({
         success: false,
