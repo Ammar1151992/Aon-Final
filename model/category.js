@@ -50,7 +50,7 @@ const categoryView = async (req, res) => {
 
 const addCategory = async (req, res) => {
   const body = req.body;
-  const userId = req.query.userId;
+  const userId = +req.user.id;
 
   try {
     const checkAdmin = await prisma.user.findUnique({
@@ -80,7 +80,7 @@ const addCategory = async (req, res) => {
 
 const editCategory = async (req, res) => {
   const id = req.params.id;
-  const userId = req.query.userId;
+  const userId = +req.user.id;
   const { name, image_url } = req.body;
 
   try {
@@ -118,7 +118,7 @@ const editCategory = async (req, res) => {
 
 const deleteCategory = async (req, res) => {
   const id = req.params.id;
-  const userId = req.query.userId;
+  const userId = +req.user.id;
 
   try {
     const checkAdmin = await prisma.user.findUnique({

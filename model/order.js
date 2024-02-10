@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 
 const orderView = async (req, res) => {
-  const userId = req.user.id;
+  const userId = +req.user.id;
   try {
     const order = await prisma.order.findMany({
       where: {
@@ -33,7 +33,9 @@ const orderView = async (req, res) => {
 
 
 const addOrder = async (req, res) => {
-  const { purchase_type, productId, userId } = req.body;
+  const { purchase_type, productId } = req.body;
+  const userId = +req.user.id;
+
 
   const getAllProduct = await prisma.product.findMany();
   const getProduct = getAllProduct.find((el) => el.id == productId);
@@ -76,7 +78,7 @@ const deleteOrder = async (req, res) => {
 }
 
 const orderAdmin = async (req, res) => {
-  const userId = req.user.id;
+  const userId = +req.user.id;
   try {
     const checkAdmin = await prisma.user.findUnique({
       where: { id: userId },

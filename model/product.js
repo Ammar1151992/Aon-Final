@@ -87,7 +87,7 @@ const productView = async (req, res) => {
 };
 
 const addProduct = async (req, res) => {
-  const userId = req.user.id;
+  const userId = +req.user.id;
   
   try {
     const checkAdmin = await prisma.user.findUnique({
@@ -161,7 +161,7 @@ const addProduct = async (req, res) => {
 }
 
 const editProduct = async (req, res) => {
-  const userId = req.user.id;
+  const userId = +req.user.id;
   const id = +req.params.id;
 try {
   const checkAdmin = await prisma.user.findUnique({
@@ -240,7 +240,7 @@ try {
 
 const deletProduct = async (req, res) => {
   const id = +req.params.id;
-  const userId = req.user.id;
+  const userId = +req.user.id;
 try {
   const checkAdmin = await prisma.user.findUnique({
     where: { id: userId },

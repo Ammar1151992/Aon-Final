@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 
 const wishlistView = async (req, res) => {
-  const userId = req.user.id;
+  const userId = +req.user.id;
   try {
     const wishlist = await prisma.wishlist.findMany({
       where: {
@@ -34,7 +34,7 @@ const wishlistView = async (req, res) => {
 
 const addWishlist = async (req, res) => {
   const { productId } = req.body;
-  const userId = req.user.id;
+  const userId = +req.user.id;
 
   const getAllProduct = await prisma.product.findMany();
   const getProduct = getAllProduct.find((el) => el.id == productId);
@@ -77,7 +77,7 @@ const deleteWishlist = async (req, res) => {
 
 
 const wishListAdmin = async (req, res) => {
-  const userId = req.user.id;
+  const userId = +req.user.id;
   try {
     const checkAdmin = await prisma.user.findUnique({
       where: { id: userId },
