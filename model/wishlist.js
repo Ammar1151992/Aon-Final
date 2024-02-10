@@ -4,11 +4,11 @@ const prisma = new PrismaClient();
 
 
 const wishlistView = async (req, res) => {
-  const userId = req.query.user;
+  const userId = req.user.id;
   try {
     const wishlist = await prisma.wishlist.findMany({
       where: {
-        userId: parseInt(userId)
+        userId: userId
       }
     })
     if(wishlist.length > 0){
@@ -33,7 +33,8 @@ const wishlistView = async (req, res) => {
 
 
 const addWishlist = async (req, res) => {
-  const { productId, userId } = req.body;
+  const { productId } = req.body;
+  const userId = req.user.id;
 
   const getAllProduct = await prisma.product.findMany();
   const getProduct = getAllProduct.find((el) => el.id == productId);
@@ -76,7 +77,7 @@ const deleteWishlist = async (req, res) => {
 
 
 const wishListAdmin = async (req, res) => {
-  const userId = +req.query.userId;
+  const userId = req.user.id;
   try {
     const checkAdmin = await prisma.user.findUnique({
       where: { id: userId },
@@ -101,4 +102,6 @@ const wishListAdmin = async (req, res) => {
     });
   }
 };
+
+
 module.exports = { addWishlist, deleteWishlist, wishlistView, wishListAdmin };

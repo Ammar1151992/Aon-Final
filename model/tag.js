@@ -25,7 +25,7 @@ const tagView = async (req, res) => {
 }
 
 const addTag = async (req, res) => {
-  const userId = req.query.userId;
+  const userId = req.user.id;
   try {
     const checkAdmin = await prisma.user.findUnique({
       where: { id: userId },
@@ -56,7 +56,7 @@ const addTag = async (req, res) => {
 
 const editTag = async (req, res) => {
   const tagId = req.query.tagId;
-  const userId = req.query.userId;
+  const userId = req.user.id;
   try {
     const checkAdmin = await prisma.user.findUnique({
       where: { id: userId },
@@ -88,7 +88,7 @@ const editTag = async (req, res) => {
 
 const deleteTag = async (req, res) => {
   const id = req.params.id;
-  const userId = req.query.userId;
+  const userId = req.user.id;
 
   try {
     const checkAdmin = await prisma.user.findUnique({

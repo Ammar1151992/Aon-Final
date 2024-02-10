@@ -9,7 +9,6 @@ const register = async (req, res) => {
   const phoneNumberPattern = /^07\d{9}$/;
 
   if (phoneNumberPattern.test(phoneNumber)) {
-
     const checkUser = await prisma.user.findMany();
 
     if (checkUser.length > 0) {
@@ -70,10 +69,9 @@ const login = async (req, res) => {
     const userLogin = loginCheck.find((el) => el.phoneNumber === phoneNumber);
     console.log(userLogin);
     if (!userLogin) {
-      return res.send({
-        success: false,
-        msg: "This number is not exsit, please register it",
-      });
+      return res
+        .status(401)
+        .send({ success: false, msg: "Failed to authenticate" });
     } else {
       let comparePassword = bcrypt.compareSync(password, userLogin.password);
       if (comparePassword) {
@@ -84,17 +82,18 @@ const login = async (req, res) => {
           userLogin,
         });
       } else {
-        return res.send({
-          success: false,
-          msg: "The password is incorrect, try again!",
-        });
+        return res
+          .status(401)
+          .send({
+            success: false,
+            msg: "Your phone number or password is not correct",
+          });
       }
     }
   } else {
-    return res.send({
-      success: false,
-      msg: "This number is not exsit, please register it",
-    });
+    return res
+      .status(401)
+      .send({ success: false, message: "Failed to authenticate" });
   }
 };
 

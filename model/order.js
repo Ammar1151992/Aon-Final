@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 
 const orderView = async (req, res) => {
-  const userId = req.query.user;
+  const userId = req.user.id;
   try {
     const order = await prisma.order.findMany({
       where: {
@@ -74,4 +74,31 @@ const deleteOrder = async (req, res) => {
       msg: "The order has been deleted!"
     })
 }
-module.exports = { addOrder, deleteOrder, orderView };
+
+const orderAdmin = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const checkAdmin = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (checkAdmin.isAdmin === true) {
+      let order = await prisma.order.findMany();
+      return res.send({
+        success: true,
+        order,
+      });
+    } else {
+      return res.send({
+        success: false,
+        msg: "You do not have access permission",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({
+      success: false,
+      error,
+    });
+  }
+};
+module.exports = { addOrder, deleteOrder, orderView, orderAdmin};
