@@ -106,7 +106,16 @@ const userView = async (req, res) => {
       where: { id: userId },
     });
     if (checkAdmin.isAdmin === true) {
-      let user = await prisma.user.findMany();
+      let user = await prisma.user.findMany({
+        select: {
+          id: true,
+          name: true,
+          phoneNumber: true,
+          email: true,
+          location: true,
+          isAdmin: true
+        }
+      });
       if(user.length > 0){
         return res.send({
           success: true,
