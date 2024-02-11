@@ -97,4 +97,43 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+
+
+const userView = async (req, res) => {
+  const userId = +req.user.id;
+  try {
+    const checkAdmin = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (checkAdmin.isAdmin === true) {
+      let user = await prisma.user.findMany();
+      if(user.length > 0){
+        return res.send({
+          success: true,
+          user,
+        });
+      }else{
+        return res
+        .status(401)
+        .send({
+          success: false,
+          msg: "No data",
+        });
+      }
+     
+    } else {
+      return res.send({
+        success: false,
+        msg: "You do not have access permission",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({
+      success: false,
+      error,
+    });
+  }
+};
+
+module.exports = { register, login, userView };
