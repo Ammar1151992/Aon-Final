@@ -24,7 +24,7 @@ app.use("/category", category);
 app.use("/tag", auth, tag);
 app.use("/user", user);
 app.use("/order", auth, order);
-app.use("/wishList", auth, wish);
+app.use("/wishlist", auth, wish);
 
 
 

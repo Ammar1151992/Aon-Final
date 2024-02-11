@@ -83,11 +83,11 @@ const wishListAdmin = async (req, res) => {
       where: { id: userId },
     });
     if (checkAdmin.isAdmin === true) {
-      let wishList = await prisma.wishlist.findMany();
+      let wishlist = await prisma.wishlist.findMany();
       if(wishlist.length > 0){
         return res.send({
           success: true,
-          wishList,
+          wishlist,
         });
       }else{
         return res
