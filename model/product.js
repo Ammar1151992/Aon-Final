@@ -78,7 +78,19 @@ const productView = async (req, res) => {
       productTag,
     });
   } else {
-    const product = await prisma.product.findMany();
+    const product = await prisma.product.findMany({
+      select: {
+        id: true,
+        title: true,
+        image: true,
+        description: true,
+        price: true,
+        color: true,
+        product_size: true,
+        is_active: true,
+        createAt: true,
+      }
+    });
     return res.send({
       success: true,
       product,
