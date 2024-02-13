@@ -82,12 +82,10 @@ const login = async (req, res) => {
           userLogin,
         });
       } else {
-        return res
-          .status(401)
-          .send({
-            success: false,
-            msg: "Your phone number or password is not correct",
-          });
+        return res.status(401).send({
+          success: false,
+          msg: "Your phone number or password is not correct",
+        });
       }
     }
   } else {
@@ -97,9 +95,40 @@ const login = async (req, res) => {
   }
 };
 
-
-
 const userView = async (req, res) => {
+  const userId = +req.user.id;
+  try {
+    let user = await prisma.user.findMany({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        phoneNumber: true,
+        email: true,
+        location: true,
+      },
+    });
+    if (user.length > 0) {
+      return res.send({
+        success: true,
+        user,
+      });
+    } else {
+      return res.status(401).send({
+        success: false,
+        msg: "No data",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({
+      success: false,
+      error,
+    });
+  }
+};
+
+const adminView = async (req, res) => {
   const userId = +req.user.id;
   try {
     const checkAdmin = await prisma.user.findUnique({
@@ -113,23 +142,20 @@ const userView = async (req, res) => {
           phoneNumber: true,
           email: true,
           location: true,
-          isAdmin: true
-        }
+          isAdmin: true,
+        },
       });
-      if(user.length > 0){
+      if (user.length > 0) {
         return res.send({
           success: true,
           user,
         });
-      }else{
-        return res
-        .status(401)
-        .send({
+      } else {
+        return res.status(401).send({
           success: false,
           msg: "No data",
         });
       }
-     
     } else {
       return res.send({
         success: false,
@@ -145,4 +171,4 @@ const userView = async (req, res) => {
   }
 };
 
-module.exports = { register, login, userView };
+module.exports = { register, login, userView, adminView };

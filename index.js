@@ -8,6 +8,7 @@ const tag = require("./routes/tag")
 const user =  require("./routes/user")
 const order = require("./routes/order")
 const wish = require("./routes/wishlist")
+const basket = require("./routes/basket")
 const cors = require('cors');
 
 
@@ -25,6 +26,7 @@ app.use("/tag", auth, tag);
 app.use("/user", user);
 app.use("/order", auth, order);
 app.use("/wishlist", auth, wish);
+app.use("/cart", auth, basket);
 
 
 

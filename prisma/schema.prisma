@@ -68,6 +68,7 @@ model User {
   isAdmin       Boolean @default(false)
   orders        Order[]
   wishs         Wishlist[]
+  baskets       Basket[]
   coins         Coin[]
 }
 
@@ -95,6 +96,19 @@ model Wishlist {
   product       Json?
   user          User @relation(fields: [userId], references: [id])
   userId        Int
+}
+
+model Basket {
+  id            Int     @id @default(autoincrement())
+  product       Json?
+  user          User @relation(fields: [userId], references: [id])
+  userId        Int
+}
+
+model MainSlider {
+  id            Int     @id @default(autoincrement())
+  caption       String
+  image         String
 }
 
 model Question {

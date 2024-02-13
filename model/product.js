@@ -8,6 +8,10 @@ const productView = async (req, res) => {
   const search = +req.query.search;
   const category = +req.query.categoryId;
   const tagId = +req.query.tagId;
+  const { limit = 10, skip = 1 } = req.query;
+ 
+  let pageSize = parseInt(limit)
+  let pageNumber = parseInt(skip)
 
   if (search) {
     const filterSearch = await prisma.product.findMany({
@@ -79,6 +83,8 @@ const productView = async (req, res) => {
     });
   } else {
     const product = await prisma.product.findMany({
+      take: pageSize,
+      skip: pageSize * (pageNumber-1),
       select: {
         id: true,
         title: true,
