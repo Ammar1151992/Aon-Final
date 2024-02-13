@@ -14,7 +14,7 @@ const basketView = async (req, res) => {
     if(basket.length > 0){
       return res.send({
         success: true,
-        wishlist
+        basket
       })
     }else{
       return res.send({
