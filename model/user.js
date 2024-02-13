@@ -114,7 +114,7 @@ const userView = async (req, res) => {
         user,
       });
     } else {
-      return res.status(401).send({
+      return res.status(404).send({
         success: false,
         msg: "No data",
       });
@@ -151,15 +151,17 @@ const adminView = async (req, res) => {
           user,
         });
       } else {
-        return res.status(401).send({
+        return res.status(404).send({
           success: false,
           msg: "No data",
         });
       }
-    } else {
-      return res.send({
+    } else{
+      return res
+      .status(401)
+      .send({
         success: false,
-        msg: "You do not have access permission",
+        msg: "You do not have access",
       });
     }
   } catch (error) {

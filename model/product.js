@@ -66,7 +66,7 @@ const productView = async (req, res) => {
     if (tagProducts.length === 0) {
       return res.status(404).send({
         success: false,
-        msg: "Tag is not found",
+        msg: "No data",
       });
     }
     
@@ -162,10 +162,12 @@ const addProduct = async (req, res) => {
         product,
         bridges
       });
-    }else {
-      return res.send({
+    }else{
+      return res
+      .status(401)
+      .send({
         success: false,
-        msg: "You do not have access permission",
+        msg: "You do not have access",
       });
     }
     
@@ -174,7 +176,6 @@ const addProduct = async (req, res) => {
       success: false,
       error,
     });
-    console.log(error);
   }
 }
 
@@ -226,10 +227,12 @@ try {
       },
     });
     if(!product){
-      return res.send({
+      return res
+      .status(404)
+      .send({
         success: false,
-        msg: "Not found"
-      })
+        msg: "No data",
+      });
     }
     let bridges = await prisma.bridge.createMany({
       data: tagIds.map(tagId => ({
@@ -242,10 +245,12 @@ try {
       product,
       bridges
     });
-  }else {
-    return res.send({
+  }else{
+    return res
+    .status(401)
+    .send({
       success: false,
-      msg: "You do not have access permission",
+      msg: "You do not have access",
     });
   }
 } catch (error) {
@@ -268,11 +273,13 @@ try {
       where: { productId: id },
     });
 
-    if(!deletBridge) {
-      return res.send({
-        success:false,
-        msg: "This product is not found"
-      })
+    if(!deletBridge){
+      return res
+      .status(404)
+      .send({
+        success: false,
+        msg: "No data",
+      });
     }
     const deleted = await prisma.product.delete({
       where: {id:id}
@@ -283,17 +290,21 @@ try {
         deleted,
         msg: "Product has been deleted"
       })
-    }else {
-      return res.send({
+    }else{
+      return res
+      .status(404)
+      .send({
         success: false,
-        msg: "This product is not found"
-      })
+        msg: "No data",
+      });
     }
-  }else {
-    return res.send({
+  }else{
+    return res
+    .status(401)
+    .send({
       success: false,
-      msg: "You do not have access"
-    })
+      msg: "You do not have access",
+    });
   }
 } catch (error) {
   console.log(error);

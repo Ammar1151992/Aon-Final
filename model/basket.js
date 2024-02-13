@@ -17,10 +17,12 @@ const basketView = async (req, res) => {
         basket
       })
     }else{
-      return res.send({
+      return res
+      .status(404)
+      .send({
         success: false,
-        msg: "No order is set"
-      })
+        msg: "No data",
+      });
     }
   } catch (error) {
     res.send({
@@ -52,10 +54,12 @@ const addBasket = async (req, res) => {
       success: true,
       addBasket,
     });
-  } else {
-    return res.send({
+  } else{
+    return res
+    .status(404)
+    .send({
       success: false,
-      msg: "Try again!",
+      msg: "Try Again",
     });
   }
 };
@@ -91,17 +95,19 @@ const basketAdmin = async (req, res) => {
         });
       }else{
         return res
-        .status(401)
+        .status(404)
         .send({
           success: false,
           msg: "No data",
         });
       }
      
-    } else {
-      return res.send({
+    } else{
+      return res
+      .status(401)
+      .send({
         success: false,
-        msg: "You do not have access permission",
+        msg: "You do not have access",
       });
     }
   } catch (error) {

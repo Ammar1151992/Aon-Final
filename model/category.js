@@ -31,10 +31,12 @@ const categoryView = async (req, res) => {
           success: true,
           category,
         });
-      } else {
-        res.send({
+      } else{
+        return res
+        .status(404)
+        .send({
           success: false,
-          msg: "No data is set",
+          msg: "No data",
         });
       }
     }
@@ -64,10 +66,12 @@ const addCategory = async (req, res) => {
         success: true,
         category,
       });
-    } else {
-      return res.send({
+    } else{
+      return res
+      .status(401)
+      .send({
         success: false,
-        msg: "You do not have access permission",
+        msg: "You do not have access",
       });
     }
   } catch (error) {
@@ -102,10 +106,12 @@ const editCategory = async (req, res) => {
         success: true,
         category,
       });
-    } else {
-      return res.send({
+    } else{
+      return res
+      .status(401)
+      .send({
         success: false,
-        msg: "You do not have access permission",
+        msg: "You do not have access",
       });
     }
   } catch (error) {
@@ -139,10 +145,12 @@ const deleteCategory = async (req, res) => {
         msg: "Category has been deleted",
         category,
       });
-    } else {
-      return res.send({
+    } else{
+      return res
+      .status(401)
+      .send({
         success: false,
-        msg: "You do not have access permission",
+        msg: "You do not have access",
       });
     }
   } catch (error) {

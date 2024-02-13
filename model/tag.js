@@ -11,11 +11,13 @@ const tagView = async (req, res) => {
           tag,
         });
       } else{
-          res.send({
+        return res
+        .status(404)
+        .send({
           success: false,
-          msg: "There is no data to be displayed",
+          msg: "No data",
         });
-      } 
+      }
   } catch (error) {
       res.send({
       success: false,
@@ -39,10 +41,12 @@ const addTag = async (req, res) => {
         success: true,
         tag,
       });
-    } else {
-      return res.send({
+    } else{
+      return res
+      .status(401)
+      .send({
         success: false,
-        msg: "You do not have access permission",
+        msg: "You do not have access",
       });
     }
   } catch (error) {
@@ -71,10 +75,12 @@ const editTag = async (req, res) => {
         success: true,
         tag,
       });
-    } else {
-      return res.send({
+    } else{
+      return res
+      .status(401)
+      .send({
         success: false,
-        msg: "You do not have access permission",
+        msg: "You do not have access",
       });
     }
   } catch (error) {
@@ -98,11 +104,13 @@ const deleteTag = async (req, res) => {
       const deletBridge = await prisma.bridge.deleteMany({
         where: { tagIds: id },
       });
-      if(!deletBridge) {
-        return res.send({
-          success:false,
-          msg: "This Tag is not found"
-        })
+      if(!deletBridge){
+        return res
+        .status(404)
+        .send({
+          success: false,
+          msg: "No data",
+        });
       }
       let tag = await prisma.tag.delete({
         where: {id: id},
@@ -112,17 +120,21 @@ const deleteTag = async (req, res) => {
           success: true,
           tag,
         });
-      }else {
-        return res.send({
+      }else{
+        return res
+        .status(404)
+        .send({
           success: false,
-          msg:"This Tag is not found"
+          msg: "No data",
         });
       }
      
-    } else {
-      return res.send({
+    } else{
+      return res
+      .status(401)
+      .send({
         success: false,
-        msg: "You do not have access permission",
+        msg: "You do not have access",
       });
     }
   } catch (error) {

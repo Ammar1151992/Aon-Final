@@ -17,10 +17,12 @@ const orderView = async (req, res) => {
         order
       })
     }else{
-      return res.send({
+      return res
+      .status(404)
+      .send({
         success: false,
-        msg: "No order is set"
-      })
+        msg: "No data",
+      });
     }
   } catch (error) {
     res.send({
@@ -54,10 +56,12 @@ const addOrder = async (req, res) => {
       success: true,
       addUserOrder,
     });
-  } else {
-    return res.send({
+  } else{
+    return res
+    .status(404)
+    .send({
       success: false,
-      msg: "Try again!",
+      msg: "Try again",
     });
   }
 };
@@ -92,16 +96,18 @@ const orderAdmin = async (req, res) => {
         });
       }else{
         return res
-        .status(401)
+        .status(404)
         .send({
           success: false,
           msg: "No data",
         });
       }
-    } else {
-      return res.send({
+    } else{
+      return res
+      .status(401)
+      .send({
         success: false,
-        msg: "You do not have access permission",
+        msg: "You do not have access",
       });
     }
   } catch (error) {
