@@ -83,11 +83,11 @@ const basketAdmin = async (req, res) => {
       where: { id: userId },
     });
     if (checkAdmin.isAdmin === true) {
-      let basket = await prisma.basket.findMany();
-      if(wishlist.length > 0){
+      let cart = await prisma.basket.findMany();
+      if(cart.length > 0){
         return res.send({
           success: true,
-          basket,
+          cart,
         });
       }else{
         return res
