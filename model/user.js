@@ -98,7 +98,7 @@ const login = async (req, res) => {
 const userView = async (req, res) => {
   const userId = +req.user.id;
   try {
-    let user = await prisma.user.findMany({
+    let user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
@@ -124,6 +124,45 @@ const userView = async (req, res) => {
     res.send({
       success: false,
       error,
+    });
+  }
+};
+
+const userUpdate = async (req, res) => {
+  try {
+    const userId = +req.user.id;
+    const { name, phoneNumber, password, email, location } = req.body;
+
+    // Validate phone number format
+    const phoneNumberPattern = /^07\d{9}$/;
+    if (!phoneNumberPattern.test(phoneNumber)) {
+      return res.send({
+        success: false,
+        msg: "Invalid phone number format",
+      });
+    }
+
+    // Update user information
+    const updates = {};
+    if (name) updates.name = name;
+    if (phoneNumber) updates.phoneNumber = phoneNumber;
+    if (password) updates.password = bcrypt.hashSync(password, 10);
+    if (email) updates.email = email;
+    if (location) updates.location = location;
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: updates,
+    });
+
+    return res.send({
+      success: true,
+      updatedUser,
+    });
+  } catch (error) {
+    return res.send({
+      success: false,
+      error: "An error occurred while updating user profile",
     });
   }
 };
@@ -173,4 +212,4 @@ const adminView = async (req, res) => {
   }
 };
 
-module.exports = { register, login, userView, adminView };
+module.exports = { register, login, userView, adminView, userUpdate };

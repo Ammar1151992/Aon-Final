@@ -39,6 +39,7 @@ model Bridge {
 model Tag {
   id            Int     @id @default(autoincrement())
   name          String
+  image         String?
   bridges       Bridge[]
 }
 
@@ -55,6 +56,7 @@ model Category {
   id            Int     @id @default(autoincrement())
   name          String
   image_url     String?
+  image         String?
   products      Product[]
 }
 

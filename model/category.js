@@ -25,7 +25,13 @@ const categoryView = async (req, res) => {
         filterSearch,
       });
     } else {
-      const category = await prisma.category.findMany();
+      const category = await prisma.category.findMany({
+        select: {
+          id: true,
+          name: true,
+          image: true
+        }
+      });
       if (category) {
         res.send({
           success: true,
