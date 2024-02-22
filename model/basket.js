@@ -22,7 +22,7 @@ const basketView = async (req, res) => {
       });
     }
   } catch (error) {
-    res.send({
+    return res.send({
       success: false,
       error,
     });
@@ -33,28 +33,37 @@ const addBasket = async (req, res) => {
   const { productId } = req.body;
   const userId = +req.user.id;
 
-  const getAllProduct = await prisma.product.findMany();
-  const getProduct = getAllProduct.find((el) => el.id == productId);
-
-  if (getProduct) {
-    const addBasket = await prisma.basket.create({
-      data: {
-        product: getProduct,
-        user: {
-          connect: { id: parseInt(userId) },
+  try {
+    const getProduct = await prisma.product.findUnique({
+      where: {id: productId}
+    });  
+    if (getProduct) {
+      const addBasket = await prisma.basket.create({
+        data: {
+          product: getProduct,
+          user: {
+            connect: { id: parseInt(userId) },
+          },
         },
-      },
-    });
+      });
+      return res.send({
+        success: true,
+        addBasket,
+      });
+    } else {
+      return res.status(404).send({
+        success: false,
+        msg: "Try Again",
+      });
+    }
+  } catch (error) {
+    console.log(error);
     return res.send({
-      success: true,
-      addBasket,
-    });
-  } else {
-    return res.status(404).send({
       success: false,
-      msg: "Try Again",
-    });
+      error
+    })
   }
+
 };
 
 const deleteBasket = async (req, res) => {

@@ -116,7 +116,7 @@ const userView = async (req, res) => {
     } else {
       return res.status(404).send({
         success: false,
-        msg: "No data",
+        msg: "This user is not found",
       });
     }
   } catch (error) {

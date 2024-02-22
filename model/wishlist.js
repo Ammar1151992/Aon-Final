@@ -119,5 +119,4 @@ const wishListAdmin = async (req, res) => {
   }
 };
 
-
 module.exports = { addWishlist, deleteWishlist, wishlistView, wishListAdmin };
