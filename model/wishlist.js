@@ -2,24 +2,21 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
-
 const wishlistView = async (req, res) => {
   const userId = +req.user.id;
   try {
     const wishlist = await prisma.wishlist.findMany({
       where: {
-        userId: userId
-      }
-    })
-    if(wishlist.length > 0){
+        userId: userId,
+      },
+    });
+    if (wishlist.length > 0) {
       return res.send({
         success: true,
-        wishlist
-      })
-    }else{
-      return res
-      .status(404)
-      .send({
+        wishlist,
+      });
+    } else {
+      return res.status(404).send({
         success: false,
         msg: "No data",
       });
@@ -27,12 +24,10 @@ const wishlistView = async (req, res) => {
   } catch (error) {
     res.send({
       success: false,
-      error
-    })
+      error,
+    });
   }
-  
-}
-
+};
 
 const addWishlist = async (req, res) => {
   const { productId } = req.body;
@@ -46,7 +41,7 @@ const addWishlist = async (req, res) => {
       data: {
         product: getProduct,
         user: {
-          connect: { id: parseInt(userId)},
+          connect: { id: parseInt(userId) },
         },
       },
     });
@@ -54,10 +49,8 @@ const addWishlist = async (req, res) => {
       success: true,
       addUserOrder,
     });
-  } else{
-    return res
-    .status(404)
-    .send({
+  } else {
+    return res.status(404).send({
       success: false,
       msg: "Try again",
     });
@@ -65,20 +58,25 @@ const addWishlist = async (req, res) => {
 };
 
 const deleteWishlist = async (req, res) => {
-    let id = parseInt(req.params.id);
-
+  let id = parseInt(req.params.id);
+  try {
     const deleteOrder = await prisma.wishlist.delete({
       where: {
-        id: id
-      }
+        id: id,
+      },
     });
     res.send({
       success: true,
       deleteOrder,
-      msg: "The order has been deleted!"
-    })
-}
-
+      msg: "The order has been deleted!",
+    });
+  } catch (error) {
+    res.send({
+      success: false,
+      error,
+    });
+  }
+};
 
 const wishListAdmin = async (req, res) => {
   const userId = +req.user.id;
@@ -88,30 +86,24 @@ const wishListAdmin = async (req, res) => {
     });
     if (checkAdmin.isAdmin === true) {
       let wishlist = await prisma.wishlist.findMany();
-      if(wishlist.length > 0){
+      if (wishlist.length > 0) {
         return res.send({
           success: true,
           wishlist,
         });
-      }else{
-        return res
-        .status(40)
-        .send({
+      } else {
+        return res.status(40).send({
           success: false,
           msg: "No data",
         });
       }
-     
-    } else{
-      return res
-      .status(401)
-      .send({
+    } else {
+      return res.status(401).send({
         success: false,
         msg: "You do not have access",
       });
     }
   } catch (error) {
-    console.log(error);
     res.send({
       success: false,
       error,
