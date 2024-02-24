@@ -3,12 +3,12 @@ const { uploadFile } = require("@uploadcare/upload-client");
 
 const prisma = new PrismaClient();
 
-const categoryView = async (req, res) => {
+const depView = async (req, res) => {
   const search = req.query.search;
 
   try {
     if (search) {
-      const filterSearch = await prisma.category.findMany({
+      const filterSearch = await prisma.dep.findMany({
         where: {
           OR: [
             {
@@ -25,24 +25,24 @@ const categoryView = async (req, res) => {
         filterSearch,
       });
     } else {
-      const category = await prisma.category.findMany({
+      const department = await prisma.dep.findMany({
         select: {
           id: true,
           name: true,
           image: true
         }
       });
-      if (category) {
+      if (department) {
         res.send({
           success: true,
-          category,
+          department,
         });
       } else{
         return res
         .status(404)
         .send({
           success: false,
-          msg: "No data",
+          msg: "No data found",
         });
       }
     }
@@ -56,7 +56,7 @@ const categoryView = async (req, res) => {
   
 };
 
-const addCategory = async (req, res) => {
+const addDep= async (req, res) => {
   const body = req.body;
   const userId = +req.user.id;
 
@@ -65,12 +65,12 @@ const addCategory = async (req, res) => {
       where: { id: userId },
     });
     if (checkAdmin.isAdmin === true) {
-      let category = await prisma.category.create({
+      let department = await prisma.dep.create({
         data: body,
       });
       return res.send({
         success: true,
-        category,
+        department,
       });
     } else{
       return res
@@ -81,7 +81,6 @@ const addCategory = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
     return res.send({
       success: false,
       error,
@@ -89,29 +88,29 @@ const addCategory = async (req, res) => {
   }
 };
 
-const editCategory = async (req, res) => {
+const editDep = async (req, res) => {
   const id = req.params.id;
   const userId = +req.user.id;
-  const { name, image_url } = req.body;
+  const { name, image } = req.body;
 
   try {
     const checkAdmin = await prisma.user.findUnique({
       where: { id: userId },
     });
     if (checkAdmin.isAdmin === true) {
-      let category = await prisma.category.update({
+      let department = await prisma.dep.update({
         where: { id: +id },
-        data: { name, image_url },
+        data: { name, image },
       });
-      if (!category) {
+      if (!department) {
         return res.status(404).send({
           success: false,
-          error: "Category not found",
+          error: "data not found",
         });
       }
       res.send({
         success: true,
-        category,
+        department,
       });
     } else{
       return res
@@ -129,7 +128,7 @@ const editCategory = async (req, res) => {
   }
 };
 
-const deleteCategory = async (req, res) => {
+const deleteDep = async (req, res) => {
   const id = req.params.id;
   const userId = +req.user.id;
 
@@ -138,19 +137,19 @@ const deleteCategory = async (req, res) => {
       where: { id: userId },
     });
     if (checkAdmin.isAdmin === true) {
-      let category = await prisma.category.delete({
+      let department = await prisma.dep.delete({
         where: { id: +id },
       });
-      if (!category) {
+      if (!department) {
         return res.status(404).send({
           success: false,
-          error: "Category not found",
+          error: "Data not found",
         });
       }
       res.send({
         success: true,
-        msg: "Category has been deleted",
-        category,
+        msg: "Data has been deleted",
+        department,
       });
     } else{
       return res
@@ -179,8 +178,8 @@ const deleteCategory = async (req, res) => {
 //   }
 
 module.exports = {
-  categoryView,
-  addCategory,
-  editCategory,
-  deleteCategory,
+  depView,
+  addDep,
+  editDep,
+  deleteDep,
 };

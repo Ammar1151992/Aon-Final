@@ -9,7 +9,10 @@ const user =  require("./routes/user")
 const order = require("./routes/order")
 const wish = require("./routes/wishlist")
 const basket = require("./routes/basket")
+const dep = require("./routes/dep")
+const char = require("./routes/char")
 const cors = require('cors');
+const { required } = require("nodemon/lib/config");
 
 
 const port = 3000;
@@ -27,6 +30,8 @@ app.use("/user", user);
 app.use("/order", auth, order);
 app.use("/wishlist", auth, wish);
 app.use("/cart", auth, basket);
+app.use("/department", dep);
+app.use("/character", char);
 
 
 

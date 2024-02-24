@@ -12,21 +12,25 @@ datasource db {
 
 
 model Product {
-  id            Int     @id @default(autoincrement())
-  title         String  
-  image         String  
-  description   String 
-  price         Float  
+  id            Int      @id @default(autoincrement())
+  title         String
+  image         String
+  description   String
+  price         Float
   color         String?
-  product_size  String  
-  is_active     Boolean @default(true) 
-  date          String?
-  createAt      DateTime @default(now())
+  product_size  String
+  is_active     Boolean  @default(true)
+  date          DateTime @default(now())
   discount      Discount?
   category      Category @relation(fields: [categoryIds], references: [id])
   categoryIds   Int
+  char          Char?    @relation(fields: [charId], references: [id])
+  charId        Int?
+  dep           Dep?     @relation(fields: [depId], references: [id])
+  depId         Int?
   bridges       Bridge[]
 }
+
 
 model Bridge {
   id        Int     @id @default(autoincrement())
@@ -55,7 +59,20 @@ model Discount {
 model Category {
   id            Int     @id @default(autoincrement())
   name          String
-  image_url     String?
+  image         String?
+  products      Product[]
+}
+
+model Char {
+  id            Int     @id @default(autoincrement())
+  name          String
+  image         String?
+  products      Product[]
+}
+
+model Dep {
+  id            Int     @id @default(autoincrement())
+  name          String
   image         String?
   products      Product[]
 }
