@@ -126,7 +126,7 @@ const productView = async (req, res) => {
         color: true,
         product_size: true,
         is_active: true,
-        createAt: true,
+        date: true,
       },
     });
     return res.send({
