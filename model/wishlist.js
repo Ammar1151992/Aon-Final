@@ -92,7 +92,7 @@ const wishListAdmin = async (req, res) => {
           wishlist,
         });
       } else {
-        return res.status(404).send({
+        return res.send({
           success: false,
           msg: "No data",
         });

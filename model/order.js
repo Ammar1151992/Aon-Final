@@ -96,7 +96,6 @@ const orderAdmin = async (req, res) => {
         });
       }else{
         return res
-        .status(404)
         .send({
           success: false,
           msg: "No data",
