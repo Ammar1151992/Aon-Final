@@ -162,7 +162,7 @@ const addProduct = async (req, res) => {
       const charId = parseInt(charIds);
       const depId = parseInt(depIds);
 
-      const uploadFiles = await uploadFile(req.files.image.data, {
+      const uploadFiles = await uploadFile(req.files.image, {
         publicKey: process.env.UPLOAD_KEY,
         store: "auto",
         metadata: {
