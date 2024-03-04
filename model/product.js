@@ -200,7 +200,7 @@ const addProduct = async (req, res) => {
       });
 
       let bridges = await prisma.bridge.createMany({
-        data: tagIds.map((tagId) => ({
+        data: await tagIds.map((tagId) => ({
           productId: product.id,
           tagIds: parseInt(tagId),
         })),
