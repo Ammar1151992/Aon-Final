@@ -147,7 +147,7 @@ const addProduct = async (req, res) => {
       const {
         title,
         description,
-        prices,
+        price,
         color,
         product_size,
         is_active,
@@ -157,7 +157,7 @@ const addProduct = async (req, res) => {
         tagIds,
       } = req.body;
 
-      const price = parseFloat(prices);
+      const prices = parseFloat(price);
       const categoryIds = parseInt(categoryId);
       const charId = parseInt(charIds);
       const depId = parseInt(depIds);
@@ -177,7 +177,7 @@ const addProduct = async (req, res) => {
           title,
           image,
           description,
-          price,
+          price: prices,
           color,
           product_size,
           is_active: is_active !== undefined ? is_active : true,
