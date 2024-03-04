@@ -83,12 +83,19 @@ const deleteOrder = async (req, res) => {
 
 const orderAdmin = async (req, res) => {
   const userId = +req.user.id;
+  const { limit = 10, skip = 1 } = req.query;
+  let pageSize = parseInt(limit);
+  let pageNumber = parseInt(skip);
+
   try {
     const checkAdmin = await prisma.user.findUnique({
       where: { id: userId },
     });
     if (checkAdmin.isAdmin === true) {
-      let order = await prisma.order.findMany();
+      let order = await prisma.order.findMany({
+        take: pageSize,
+        skip: pageSize * (pageNumber - 1)
+      });
       if(order.length > 0) {
         return res.send({
           success: true,

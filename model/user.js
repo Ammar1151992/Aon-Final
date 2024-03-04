@@ -169,12 +169,18 @@ const userUpdate = async (req, res) => {
 
 const adminView = async (req, res) => {
   const userId = +req.user.id;
+  const { limit = 10, skip = 1 } = req.query;
+  let pageSize = parseInt(limit);
+  let pageNumber = parseInt(skip);
+
   try {
     const checkAdmin = await prisma.user.findUnique({
       where: { id: userId },
     });
     if (checkAdmin.isAdmin === true) {
       let user = await prisma.user.findMany({
+        take: pageSize,
+        skip: pageSize * (pageNumber - 1),
         select: {
           id: true,
           name: true,

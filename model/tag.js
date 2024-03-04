@@ -3,8 +3,15 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const tagView = async (req, res) => {
+  const { limit = 10, skip = 1 } = req.query;
+  let pageSize = parseInt(limit);
+  let pageNumber = parseInt(skip);
+
   try {
-      let tag = await prisma.tag.findMany();
+      let tag = await prisma.tag.findMany({
+        take: pageSize,
+        skip: pageSize * (pageNumber - 1)
+      });
       if(tag.length > 0){
          res.send({
           success: true,

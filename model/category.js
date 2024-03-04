@@ -5,6 +5,9 @@ const prisma = new PrismaClient();
 
 const categoryView = async (req, res) => {
   const search = req.query.search;
+  const { limit = 10, skip = 1 } = req.query;
+  let pageSize = parseInt(limit);
+  let pageNumber = parseInt(skip);
 
   try {
     if (search) {
@@ -26,6 +29,8 @@ const categoryView = async (req, res) => {
       });
     } else {
       const category = await prisma.category.findMany({
+        take: pageSize,
+        skip: pageSize * (pageNumber - 1),
         select: {
           id: true,
           name: true,
