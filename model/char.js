@@ -134,7 +134,7 @@ const editChar = async (req, res) => {
 };
 
 const deleteChar = async (req, res) => {
-  const id = req.params.id;
+  const id = +req.params.id;
   const userId = +req.user.id;
 
   try {
