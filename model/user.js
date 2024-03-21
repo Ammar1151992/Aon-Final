@@ -108,7 +108,7 @@ const userView = async (req, res) => {
         location: true,
       },
     });
-    if (user.length > 0) {
+    if (user) {
       return res.send({
         success: true,
         user,
